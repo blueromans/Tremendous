@@ -36,6 +36,13 @@ class TremendousService(HttpService):
     def getProducts(self):
         return self.getRequest('products')
 
+    def getProduct(self, product_id):
+        endpoint = f'/api/v2/products/{product_id}'
+        response = self.connect('GET', endpoint, headers=self.headers)
+        if 'product' not in response:
+            raise AttributeError(ErrorCodes.INVALID_ATTRIBUTE)
+        return response['product']
+
     def createOrder(self, body):
         key = 'order'
         endpoint = '/api/v2/orders'
