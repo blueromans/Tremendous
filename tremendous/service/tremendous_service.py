@@ -1,6 +1,7 @@
 import os
-from tremendous.exception import TremendousException, ErrorCodes
+from tremendous.exception import ErrorCodes
 from tremendous.service.http_service import HttpService
+from urllib.parse import urlencode
 
 
 class TremendousService(HttpService):
@@ -23,8 +24,8 @@ class TremendousService(HttpService):
             'accept': 'application/json'
         }
 
-    def getRequest(self, key):
-        endpoint = f'/api/v2/{key}'
+    def getRequest(self, key, **kwargs):
+        endpoint = f'/api/v2/{key}' if kwargs is None else f'/api/v2/{key}?{urlencode(kwargs)}'
         response = self.connect('GET', endpoint, headers=self.headers)
         if key not in response:
             raise AttributeError(ErrorCodes.INVALID_ATTRIBUTE)
@@ -33,8 +34,8 @@ class TremendousService(HttpService):
     def getFundingSource(self):
         return self.getRequest('funding_sources')
 
-    def getProducts(self):
-        return self.getRequest('products')
+    def getProducts(self, **kwargs):
+        return self.getRequest('products', **kwargs)
 
     def getProduct(self, product_id):
         endpoint = f'/api/v2/products/{product_id}'
